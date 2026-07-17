@@ -10,7 +10,7 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const COOKIE_OPTIONS = {
   httpOnly: true,
   signed: true,
-  sameSite: "lax" as const,
+  sameSite: process.env.NODE_ENV === "production" ? ("none" as const) : ("lax" as const),
   secure: process.env.NODE_ENV === "production",
   maxAge: 1000 * 60 * 60 * 24 * 30,
 };
@@ -73,7 +73,7 @@ authRouter.post("/login", async (req, res) => {
 });
 
 authRouter.post("/logout", (_req, res) => {
-  res.clearCookie(SESSION_COOKIE);
+  res.clearCookie(SESSION_COOKIE, { sameSite: COOKIE_OPTIONS.sameSite, secure: COOKIE_OPTIONS.secure });
   res.json({ ok: true });
 });
 

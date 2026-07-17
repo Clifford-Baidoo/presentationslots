@@ -1,0 +1,74 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// A person who creates availability and shares a booking link (presentationslots.example/book/:slug).
+model Host {
+  id               String            @id @default(cuid())
+  name             String
+  email            String            @unique
+  passwordHash     String
+  slug             String            @unique
+  createdAt        DateTime          @default(now())
+  availabilityDays AvailabilityDay[]
+}
+
+// A window of time a host opened up on a given day (e.g. 2026-08-01, 09:00-16:00, 15 min/session).
+// Slots are generated once, at creation time, by slicing this window into sessionMinutes chunks.
+model AvailabilityDay {
+  id             String   @id @default(cuid())
+  hostId         String
+  host           Host     @relation(fields: [hostId], references: [id], onDelete: Cascade)
+  date           String // YYYY-MM-DD
+  startTime      String // HH:MM (24h)
+  endTime        String // HH:MM (24h)
+  sessionMinutes Int
+  createdAt      DateTime @default(now())
+  slots          Slot[]
+
+  @@index([hostId, date])
+}
+
+model Slot {
+  id                String          @id @default(cuid())
+  availabilityDayId String
+  availabilityDay   AvailabilityDay @relation(fields: [availabilityDayId], references: [id], onDelete: Cascade)
+  hostId            String // denormalized so uniqueness and public lookups don't need a join
+  date              String // YYYY-MM-DD, denormalized for sorting/filtering
+  startTime         String // HH:MM
+  endTime           String // HH:MM
+  bookings          Booking[]
+  createdAt         DateTime        @default(now())
+
+  @@unique([hostId, date, startTime])
+  @@index([hostId, date])
+}
+
+// A slot can accumulate multiple declined bookings over time, but at most one
+// active (pending or confirmed) booking at a time — enforced in a transaction
+// in src/index.ts, not by a DB constraint, since "declined" rows must stay
+// for the student's history while freeing the slot for someone else.
+model Booking {
+  id            String    @id @default(cuid())
+  slotId        String
+  slot          Slot      @relation(fields: [slotId], references: [id], onDelete: Cascade)
+  studentName   String
+  studentEmail  String
+  topic         String?
+  status        String    @default("pending") // pending | confirmed | declined
+  createdAt     DateTime  @default(now())
+  confirmedAt   DateTime?
+
+  @@index([studentEmail])
+  @@index([slotId])
+}
+
+model Setting {
+  key   String @id
+  value String
+}

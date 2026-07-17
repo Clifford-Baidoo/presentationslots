@@ -7,7 +7,7 @@ const steps = [
   },
   {
     title: "Share your link",
-    description: "You get a personal booking page like presentationslots.app/book/you. Drop it in an email, a syllabus, anywhere.",
+    description: "You get a personal booking page like bookit.app/book/you. Drop it in an email, a message, anywhere.",
   },
   {
     title: "Confirm requests",
@@ -20,7 +20,7 @@ export default function Landing() {
     <div className="space-y-20 py-6">
       <section className="text-center max-w-2xl mx-auto space-y-6">
         <h1 className="text-4xl sm:text-5xl font-bold text-ink tracking-tight">
-          Book presentation slots, without the back-and-forth.
+          Book time, without the back-and-forth.
         </h1>
         <p className="text-lg text-ink-light">
           Open up your availability, share one link, and let people pick a time that works. You confirm — no

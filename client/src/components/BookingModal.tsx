@@ -61,7 +61,7 @@ export default function BookingModal({ date, startTime, endTime, slotId, onClose
           hint="Use this later to check your booking status."
         />
         <TextField
-          label="Presentation topic (optional)"
+          label="What's this about? (optional)"
           icon={<MessageIcon className="w-4 h-4" />}
           value={topic}
           onChange={(e) => setTopic(e.target.value)}

@@ -18,7 +18,7 @@ async function main() {
 
   const host = await prisma.host.create({
     data: {
-      name: "Demo Presenter",
+      name: "Demo Host",
       email: "demo@example.com",
       passwordHash: await hashPassword("password123"),
       slug: "demo",

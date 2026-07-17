@@ -22,7 +22,7 @@ export default function Layout() {
                 <path d="M16 3V6" stroke="white" strokeWidth="2" strokeLinecap="round" />
               </svg>
             </span>
-            Presentation Slots
+            BookIt
           </NavLink>
           <nav className="flex items-center gap-1">
             <NavLink to="/my-bookings" className={linkClass}>

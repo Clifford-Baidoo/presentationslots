@@ -4,11 +4,12 @@ import { authLogout } from "../api";
 import { useAuth } from "../hooks/useAuth";
 import HostAvailability from "./HostAvailability";
 import HostBookings from "./HostBookings";
+import HostSchedule from "./HostSchedule";
 
 export default function Dashboard() {
   const navigate = useNavigate();
   const { loading, host } = useAuth();
-  const [tab, setTab] = useState<"availability" | "bookings">("bookings");
+  const [tab, setTab] = useState<"availability" | "bookings" | "schedule">("bookings");
   const [copied, setCopied] = useState(false);
 
   if (loading) return <p className="text-ink-light">Loading…</p>;
@@ -74,9 +75,19 @@ export default function Dashboard() {
         >
           Availability
         </button>
+        <button
+          onClick={() => setTab("schedule")}
+          className={`pb-2 text-sm font-medium border-b-2 -mb-px ${
+            tab === "schedule" ? "border-ink text-ink" : "border-transparent text-ink-light hover:text-ink"
+          }`}
+        >
+          Schedule
+        </button>
       </div>
 
-      {tab === "bookings" ? <HostBookings /> : <HostAvailability />}
+      {tab === "bookings" && <HostBookings />}
+      {tab === "availability" && <HostAvailability />}
+      {tab === "schedule" && <HostSchedule />}
     </div>
   );
 }
